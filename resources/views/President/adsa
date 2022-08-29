@@ -1,0 +1,327 @@
+@extends('layouts.studentmaster')
+<style>
+    td {
+        height: 35px;
+    }
+</style>
+@section('content')
+<!-- Profile Image -->
+@if (session('updates'))
+<div class="alert alert-success alert-dismissible">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>Success!</strong> Student info updated.
+</div>
+@endif
+<div class="row">
+    <div class="col-md-3">
+        <div class="card card-primary card-outline">
+            <div class="card-body box-profile">
+                <div class="text-center">
+                    <img class="profile-user-img img-fluid img-circle" src="blankpic.png" alt="User profile picture">
+                </div>
+
+                <h3 class="profile-username text-center">{{{Auth::user()->name}}}</h3>
+
+                <p class="text-muted text-center">{{{Auth::user()->matrix_num}}}</p>
+
+                <ul class="list-group list-group-unbordered mb-3">
+                    <li class="list-group-item">
+                        <b>Program</b> <a class="float-right">{{{Auth::user()->program}}}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Phone No </b> <a class="float-right">{{{Auth::user()->phone_no}}}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Email</b> <a class="float-right">{{{Auth::user()->email}}}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Address</b> <a class="float-right">{{{Auth::user()->address}}}</a>
+                    </li>
+                </ul>
+
+                <a class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal-default"><b>Update Profile</b></a>
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                    <li class="nav-item"><a class="nav-link active" href="#company" data-toggle="tab">Company</a></li>
+
+                </ul>
+            </div><!-- /.card-header -->
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="active tab-pane" id="company">
+                        @if (session('status'))
+                        <div class="alert alert-success alert-dismissible">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Success!</strong> Company info updated successfully.
+                        </div>
+                        @endif
+                        @forelse ($users as $user)
+                        <!-- <strong class="text-muted"><i class="fas fa-building mr-1"></i>Company Name</strong>
+
+                        <p>
+                            {{$user->name}}
+                        </p>
+
+                        <strong class="text-muted"><i class="fas fa-address-card mr-1"></i>Address</strong>
+
+                        <p>
+                            {{$user->address}}
+                        </p>
+
+                        <strong class="text-muted"><i class="fas fa-phone mr-1"></i>Phone Number</strong> -->
+
+                        <table style="width:50%">
+                            <tr>
+                                <td> <strong class="text-muted"><i class="fas fa-briefcase mr-1"></i>Company Name</strong></td>
+                                <td><b>:</b> {{$user->name}}</td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-muted"><i class="fas fa-building mr-1"></i>Address</strong></td>
+                                <td><b>:</b> {{$user->address}}</td>
+                            </tr>
+                            <tr>
+                                <td> <strong class="text-muted"><i class="fas fa-phone mr-1"></i>Phone Number</strong></td>
+                                <td><b>:</b> {{$user->phone_no}}</td>
+                            </tr>
+                        </table>
+                        <br>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#update-company-modal">Update Company</button>
+                        @empty
+                        <table style="width:50%">
+                            <tr>
+                                <td> <strong class="text-muted"><i class="fas fa-briefcase mr-1"></i>Company Name</strong></td>
+                                <td><b>:</b> </td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-muted"><i class="fas fa-building mr-1"></i>Address</strong></td>
+                                <td><b>:</b></td>
+                            </tr>
+                            <tr>
+                                <td> <strong class="text-muted"><i class="fas fa-phone mr-1"></i>Phone Number</strong></td>
+                                <td><b>:</b> </td>
+                            </tr>
+                        </table>
+                        <br>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#add-company-modal">Add Company</button>
+                        @endforelse
+
+                    </div>
+
+                    <div class="tab-pane" id="supervisor">
+                        <div style="text-align: center;"><b>Industry Coach</b></div>
+                        <hr>
+                        <b>Name:</b><br>
+                        <br>
+                        <b>Phone No:</b>
+                        <hr>
+                        <div style="text-align: center;"><b>Academic Supervisor</b></div>
+                        <hr>
+                        <b>Name:</b><br>
+                        <br>
+                        <b>Phone No:</b>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+            <!-- PROFILE UPDATE MODAL !-->
+            <div class="modal fade" id="modal-default">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Update Profile</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url('updateStudent/'.Auth::user()->id) }}" method="POST">
+                                @csrf
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="matrix_num" placeholder="Student ID" value="{{{Auth::user()->matrix_num}}}">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-graduation-cap"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="password" class="form-control" name="password" placeholder="Password">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="password" name="confirm_password" class="form-control" placeholder="Retype password">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="name" placeholder="Full name" value="{{{Auth::user()->name}}}">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="program" placeholder="Program" value="{{{Auth::user()->program}}}">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-graduation-cap"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="phone_no" placeholder="Phone Number" value="{{{Auth::user()->phone_no}}}">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-phone"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="email" class="form-control" name="email" placeholder="Email" value="{{{Auth::user()->email}}}">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-envelope"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="address" placeholder="Address" value="{{{Auth::user()->address}}}">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-home"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
+            <!-- COMPANY INFO UPDATE MODAL !-->
+            <div class="modal fade" id="update-company-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Update Company Info</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @foreach($users as $user)
+                            <form action="{{ route('update.company') }}" method="POST">
+                                @csrf
+
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="name" placeholder="Company name" value="{{$user->name}}">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-briefcase"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="address" placeholder="Address" value="{{$user->address}}">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-building"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="phone_no" placeholder="{$user->phone_no}" value="{{$user->phone_no}}">
+                                    <input hidden type="text" class="form-control" name="id" value="{{$user->id}}">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-phone"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                            @endforeach
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- ADD COMPANY -->
+            <div class="modal fade" id="add-company-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add Company Info</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('add.company') }}" method="POST">
+                                @csrf
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="name" placeholder="Company name" value="">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-briefcase"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="address" placeholder="Address">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-building"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="phone_no" placeholder="Phone Number" value="">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-phone"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input hidden type="number" class="form-control" name="student_id" placeholder="Student ID" value="{{{Auth::user()->matrix_num}}}">
+                                </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+        </div>
+    </div>
+
+    @endsection
